@@ -1,0 +1,17 @@
+{
+   "tenant-details":
+   [
+    {
+      "tenant-URL"  : "https://MyServer/e/environment-id/api/v1/",
+      "API-token"   : "Token-value",
+      "tenant-name" : "Production-environment"
+    },
+    {
+      "tenant-URL"  : "https://vvl663.managed-sprint.dynalabs.io/e/e6ac6c11-917a-46fa-9da3-55a7265f572f/api/v1/",
+      "API-token"   : "Staging-Token",
+      "tenant-name" : "Staging-environment"
+    }
+  ],
+ "log_file": "weekly_dem_host_unit_consumption.log"
+}
+

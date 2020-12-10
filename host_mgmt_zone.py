@@ -39,6 +39,7 @@ def dtApiQuery(logger, endpoint, tenant_info, URL=""):
       URL = tenant_info.tenant_url
 
     query = str(URL) + str(endpoint)
+    logger.debug(query)
     get_param = {'Accept':'application/json', 'Authorization':'Api-Token {}'.format(tenant_info.tenant_token)}
     populate_data = requests.get(query, headers = get_param)
     data = populate_data.json()

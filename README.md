@@ -12,8 +12,9 @@
    **tenant-URL**: The tenant URL which will be used to fire the API call  
    **API-token**: The API token which will be used to fire the API  
    **tenant-name**: The tenant name  
+   
    NOTE: If you have multiple tenants to be monitored, add another section  
-
+   
    **log_file**: the log file where the script logs will be saved  
    
 ## host_mgmt_zone.py:  

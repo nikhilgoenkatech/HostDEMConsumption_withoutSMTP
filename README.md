@@ -18,10 +18,10 @@
    
 ## host_mgmt_zone.py:  
 It is a python script that will make API calls to collect information about the current running hosts, applications and their consumption.  
-Two excel files "Consumption_details.xlsx" and "HostGroup_Consumption.xlsx" will be generated with the details of host/DEM utilization according to management zone and host unit consumption sliced per management zone.  
+Two excel files "Consumption_details.xlsx" and "HostGroup_Consumption.xlsx" will be generated with the details of host/DEM utilization according to management zone and host unit consumption sliced per management zone respectively.  
 
 How to run the script:  
-You can schedule the script to execute every week by using a crontab entry as below:  
+As the API calls are pulling data for the last three days, you can schedule the script to execute every 3-days by using a crontab entry as below:  
 0 0 * * 0 /home/ngoenka/host_mgmt_zone.py > check_host_consumption_script.out  
 
 ## constant_host_unit.py  

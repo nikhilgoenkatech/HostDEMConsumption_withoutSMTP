@@ -64,10 +64,10 @@ def pretty_print(logger, app_mgmt_zone):
     logger.fatal("Received exception while running pretty_print", str(e), exc_info=True)
 
 
-def write_data(logger, worksheet, tenant_info, mgmt_zone, app_mgmt_zone):
+def write_data(logger, worksheet, worksheet_hostgroup, tenant_info, mgmt_zone, host_group, app_mgmt_zone):
     try:
       logger.info("In write_data: ")
-      j = 0 
+      j = 0
       for key in mgmt_zone.keys():
         try:
           total_consumption = 0
@@ -95,18 +95,24 @@ def write_data(logger, worksheet, tenant_info, mgmt_zone, app_mgmt_zone):
           worksheet.write(j,0,str(key))
           worksheet.write(j,1,float(host_units))
           worksheet.write(j,2,float(total_consumption))
- 
+## host group
+      k = 1 
+      for key in host_group.keys():
+        worksheet_hostgroup.write(k,0,str(key))
+        worksheet_hostgroup.write(k,1,host_group[key])
+        k = k + 1
+
     except Exception:
       logger.error ("Received error while executing write_data ", exc_info=e)
      
     finally:
-      return worksheet
+      return worksheet,worksheet_hostgroup
 
 #------------------------------------------------------------------------
 # Author: Nikhil Goenka
 # Function to call API and populate the excel file
 #------------------------------------------------------------------------
-def func(logger, totalHostUnits, tenant_info, workbook, mgmt_zone, app_mgmt_zone):
+def func(logger, totalHostUnits, tenant_info, workbook, workbook_hostgroup,  mgmt_zone, host_group, app_mgmt_zone):
   try:
     logger.info("In func")
     logger.debug("func: totalHostUnits = %s", totalHostUnits)  
@@ -115,6 +121,8 @@ def func(logger, totalHostUnits, tenant_info, workbook, mgmt_zone, app_mgmt_zone
 
     for host in hosts:
       key = ""
+      hostGroup = ""
+
       #Management Zone
       try:
         zones = host['managementZones']
@@ -123,6 +131,17 @@ def func(logger, totalHostUnits, tenant_info, workbook, mgmt_zone, app_mgmt_zone
         key = key[:-1]
       except KeyError:
         key = "No assigned management zone"
+ 
+      try:
+        if host['hostGroup']:
+          hostGroup = host['hostGroup']['name']
+      except KeyError:
+          hostGroup = "No host Group"
+
+      try:
+         host_group[hostGroup] = host_group[hostGroup] + float(host['consumedHostUnits'])
+      except KeyError:
+         host_group[hostGroup] = float(host['consumedHostUnits']) 
 
       try:
         mgmt_zone[key] = mgmt_zone[key] + float(host['consumedHostUnits'])
@@ -142,11 +161,15 @@ def func(logger, totalHostUnits, tenant_info, workbook, mgmt_zone, app_mgmt_zone
     app_mgmt_zone = populate_consumption(logger, app_mgmt_zone, tenant_info, HTTP_BILLING_API, 2)
    
     worksheet = workbook.add_worksheet(tenant_info.name) 
-    #pretty_print(logger, app_mgmt_zone)        
     worksheet.write(0,0,"Management Zone")
     worksheet.write(0,1,"Host Units Consumption")
     worksheet.write(0,2,"DEM Units Consumption")
-    worksheet = write_data(logger, worksheet, tenant_info, mgmt_zone, app_mgmt_zone)
+
+    worksheet_hostgroup = workbook_hostgroup.add_worksheet(tenant_info.name) 
+    worksheet_hostgroup.write(0,0,"Host Group")
+    worksheet_hostgroup.write(0,1,"Host Units Consumption")
+
+    worksheet, worksheet_hostgroup = write_data(logger, worksheet, worksheet_hostgroup, tenant_info, mgmt_zone, host_group, app_mgmt_zone)
     logger.info("Successful execution: func")
     
   except Exception as e:
@@ -225,7 +248,7 @@ def fetch_syn_application(logger, app_mgmt_zone, tenant_info, query):
 
       #For custom-type application, applicationType is not populated, hence the check
       try:
-        if application[i]['type'] is not "HTTP":
+        if application[i]['type'] != "HTTP":
           appInfo.type = "Synthetic"
         else:
           appInfo.type = "HTTP"
@@ -356,13 +379,15 @@ if __name__ == "__main__":
     tenants = data['tenant-details']
 
     workbook = xlsxwriter.Workbook("Consumption_details.xlsx") 
+    workbook_hostgroup = xlsxwriter.Workbook("Hostgroup_Consumption.xlsx") 
     for tenant in tenants:
       mgmt_zone = {}
+      host_group = {}
       app_mgmt_zone = {} 
 
       tenant_info = tenantInfo()
       tenant_info = populate_tenant_details(logger, tenant, tenant_info)
-      workbook = func(logger, totalHostUnits, tenant_info, workbook, mgmt_zone, app_mgmt_zone)
+      workbook = func(logger, totalHostUnits, tenant_info, workbook, workbook_hostgroup, mgmt_zone, host_group, app_mgmt_zone)
    
   except Exception as e:
     logger.error("Received exception while running main", exc_info=e)
@@ -370,3 +395,4 @@ if __name__ == "__main__":
   finally:
     logger.info("Succesfull completion of running the program")
     workbook.close()
+    workbook_hostgroup.close()

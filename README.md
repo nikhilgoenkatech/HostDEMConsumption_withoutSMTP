@@ -8,13 +8,13 @@
  ## config.json  
    It consists of the below configurables:  
    
-     ### tenant-details:  
-         **tenant-URL**: The tenant URL which will be used to fire the API call  
-         **API-token**: The API token which will be used to fire the API  
-         **tenant-name**: The tenant name  
-        NOTE: If you have multiple tenants to be monitored, add another section  
+   tenant-details:  
+   **tenant-URL**: The tenant URL which will be used to fire the API call  
+   **API-token**: The API token which will be used to fire the API  
+   **tenant-name**: The tenant name  
+   NOTE: If you have multiple tenants to be monitored, add another section  
 
-     ### **log_file**: the log file where the script logs will be saved  
+   **log_file**: the log file where the script logs will be saved  
    
 ## host_mgmt_zone.py:  
 It is a python script that will make API calls to collect information about the current running hosts, applications and their consumption.  

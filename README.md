@@ -6,7 +6,7 @@ There are four files in the package:
  - config.json  
    ===========
    tenant-details:  
-     tenant-URL: The tenant URL which will be used to fire the API call 
+     tenant-URL: The tenant URL which will be used to fire the API call  
      API-token: The API token which will be used to fire the API  
      tenant-name: The tenant name  
    NOTE: If you have multiple tenants to be monitored, add another section  

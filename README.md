@@ -6,7 +6,8 @@
    ```
  
  ## config.json  
-   It consists of the below configurables:
+   It consists of the below configurables:  
+   
      ### tenant-details:  
          **tenant-URL**: The tenant URL which will be used to fire the API call  
          **API-token**: The API token which will be used to fire the API  
